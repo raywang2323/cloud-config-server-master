@@ -1,0 +1,32 @@
+#cloud-config
+
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZICnJ0KH4TfX3Hj/u4+YeJYkwMyu9TgErr46Z8TICTvD11f7C6xiUJSl5UzwoenE9nr4I1Xrorca3Tnxb7bnWC2t4fjWZvMa7cc4YmbdjTU8hKsZb1ltGt7w7dXF6ZKD9x4G8lNKN3u5GeqDkn38ppr54YeEISdx0r0On3d/fPcC7g89UIRw1mMHY5kJc1ERLEWEfPGN5MGcdMUMiXFOQYLX5xHX7Jlxq99JyqaUm0MHPLyZXUDISg/+0FDM1esix3WNQhAFB9XsUduJp/6TAX6M1w+DVOPJ4z7tq/kD4Om7e2Py5pVJJfcp8DoxXHkY9wu0sNDL0ddCLq+zI1sSD henry@henrys-iMac.local
+
+coreos:
+  etcd2:
+    discovery: "https://discovery.etcd.io/new?size=x"
+    advertise-client-urls: "http://public_ipv4:2379"
+    initial-advertise-peer-urls: "http://public_ipv4:2380"
+    listen-client-urls: "http://public_ipv4:2379,http://127.0.0.1:2379"
+    listen-peer-urls: "http://public_ipv4:2380"
+
+  units:
+    - name: static.network
+      content: |
+        [Match]
+        Name=enp0s3
+
+        [Network]
+        DNS=
+        Address=public_ipv4
+        Gateway=
+    - name: etcd2.service
+      command: start
+
+users:
+  - name: henry
+    passwd:
+    groups:
+      - sudo
+      - docker

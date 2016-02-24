@@ -1,0 +1,44 @@
+#cloud-config
+
+hostname: ma
+
+ssh_authorized_keys:
+  - 
+  
+coreos:
+  etcd2:
+    # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
+    # specify the initial size of your cluster with ?size=X
+    discovery: https://discovery.etcd.io/e7f427be41faf8aff9112a1078b49ded
+    advertise-client-urls: http://public_ipv4:2379
+    initial-advertise-peer-urls: http://public_ipv4:2380
+    # listen on both the official ports and the legacy ports
+    # legacy ports can be omitted if your application doesn't depend on them
+    listen-client-urls: http://public_ipv4:2379,http://127.0.0.1:2379
+    listen-peer-urls: http://public_ipv4:2380
+  units:
+    - name: systemd-networkd.service
+      command: stop
+    - name: 00-enp0s3.network
+      runtime: true
+      content: |
+        [Match]
+        Name=enp0s3
+
+        [Network]
+        DNS=192.168.31.1
+        Address=public_ipv4/24
+        Gateway=192.168.31.1
+    - name: down-interfaces.service
+      command: start
+      content: |
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/ip link set enp0s3 down
+        ExecStart=/usr/bin/ip addr flush dev enp0s3
+    - name: systemd-networkd.service
+      command: restart
+    - name: etcd2.service
+      command: start
+    - name: flanneld.service
+      command: start

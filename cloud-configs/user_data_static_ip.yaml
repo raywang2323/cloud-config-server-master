@@ -1,0 +1,28 @@
+#cloud-config
+
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZICnJ0KH4TfX3Hj/u4+YeJYkwMyu9TgErr46Z8TICTvD11f7C6xiUJSl5UzwoenE9nr4I1Xrorca3Tnxb7bnWC2t4fjWZvMa7cc4YmbdjTU8hKsZb1ltGt7w7dXF6ZKD9x4G8lNKN3u5GeqDkn38ppr54YeEISdx0r0On3d/fPcC7g89UIRw1mMHY5kJc1ERLEWEfPGN5MGcdMUMiXFOQYLX5xHX7Jlxq99JyqaUm0MHPLyZXUDISg/+0FDM1esix3WNQhAFB9XsUduJp/6TAX6M1w+DVOPJ4z7tq/kD4Om7e2Py5pVJJfcp8DoxXHkY9wu0sNDL0ddCLq+zI1sSD henry@henrys-iMac.local
+
+coreos:
+  units:
+    - name: systemd-networkd.service
+      command: stop
+    - name: 00-enp0s3.network
+      runtime: true
+      content: |
+        [Match]
+        Name=enp0s3
+
+        [Network]
+        DNS=192.168.31.1
+        Address=192.168.31.80/24
+        Gateway=192.168.31.1
+    - name: down-interfaces.service
+      command: start
+      content: |
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/ip link set enp0s3 down
+        ExecStart=/usr/bin/ip addr flush dev enp0s3
+    - name: systemd-networkd.service
+      command: restart

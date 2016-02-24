@@ -1,0 +1,239 @@
+#cloud-config
+
+hostname: master${num}
+
+users:
+  - name: henry
+    passwd: $1$/Dz7RjiZ$bYW8jDXvtPfGeoG9Lv68J.
+    groups:
+      - sudo
+      - docker
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCxX2im4hTlGi2+oUaqzmguRmXOoHqFofvSILYegBHu2cmu3cHMFyQX9mBa2qVJ/+d6F/lfJ1XX4OYxPwtEe4YHgzsUzvUgZod3x2hoim2uOGaf0BoRdTAnQxY6Tum9fylI+MzMmDLFR1d2G3AzGyDPc9baZJWVCElNLbeq47sXITiVl5j52u+WHPRnEy/PMIX5amLPWTBYPds7qF8zlUJaM6r9xedFyyv2t5J/6Zn755f0S9rEVw5ga8H71qj4d9MgaHF5DjLS46ml5lL7vmNpk2wdIL54ncZ5a/I4JcFsnhycrBIXVoaq+aubstyByG6S8qa4OqSPOIaHvfaIK9fNcffVoTzjGNyZo5yy2qEemSPQ0emSp0CiuGra7E4cPnbhFdfEJHXOz7+TJ5CwY0QvR6wEOr0t5PxzHZsI4aoKvrrEeoeua9guZmRU41SujCvi4sDSXRVfxyq6yLhk9kVS4/zbXIsANN9p9CkeXUsZiAqUv6d+rRXY2kuh0S5aM9a1GoRHbfYxeNIXeko3hkJnl9CFtd2qnio0L+vLF55wvuvYgoxmW/YtNfIsI8DO43+Ydez7SIGfauuErBqPhAUYL2U5S4i8p/Oqnzuxm755R5/yXO3Wxko27LC09YhnZGk8AswsIv3rdgYiNscDQMZorya5WH4lnJjkJnmmOh44mw== jaohaohsuan@gmail.com
+
+ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCxX2im4hTlGi2+oUaqzmguRmXOoHqFofvSILYegBHu2cmu3cHMFyQX9mBa2qVJ/+d6F/lfJ1XX4OYxPwtEe4YHgzsUzvUgZod3x2hoim2uOGaf0BoRdTAnQxY6Tum9fylI+MzMmDLFR1d2G3AzGyDPc9baZJWVCElNLbeq47sXITiVl5j52u+WHPRnEy/PMIX5amLPWTBYPds7qF8zlUJaM6r9xedFyyv2t5J/6Zn755f0S9rEVw5ga8H71qj4d9MgaHF5DjLS46ml5lL7vmNpk2wdIL54ncZ5a/I4JcFsnhycrBIXVoaq+aubstyByG6S8qa4OqSPOIaHvfaIK9fNcffVoTzjGNyZo5yy2qEemSPQ0emSp0CiuGra7E4cPnbhFdfEJHXOz7+TJ5CwY0QvR6wEOr0t5PxzHZsI4aoKvrrEeoeua9guZmRU41SujCvi4sDSXRVfxyq6yLhk9kVS4/zbXIsANN9p9CkeXUsZiAqUv6d+rRXY2kuh0S5aM9a1GoRHbfYxeNIXeko3hkJnl9CFtd2qnio0L+vLF55wvuvYgoxmW/YtNfIsI8DO43+Ydez7SIGfauuErBqPhAUYL2U5S4i8p/Oqnzuxm755R5/yXO3Wxko27LC09YhnZGk8AswsIv3rdgYiNscDQMZorya5WH4lnJjkJnmmOh44mw== jaohaohsuan@gmail.com
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZICnJ0KH4TfX3Hj/u4+YeJYkwMyu9TgErr46Z8TICTvD11f7C6xiUJSl5UzwoenE9nr4I1Xrorca3Tnxb7bnWC2t4fjWZvMa7cc4YmbdjTU8hKsZb1ltGt7w7dXF6ZKD9x4G8lNKN3u5GeqDkn38ppr54YeEISdx0r0On3d/fPcC7g89UIRw1mMHY5kJc1ERLEWEfPGN5MGcdMUMiXFOQYLX5xHX7Jlxq99JyqaUm0MHPLyZXUDISg/+0FDM1esix3WNQhAFB9XsUduJp/6TAX6M1w+DVOPJ4z7tq/kD4Om7e2Py5pVJJfcp8DoxXHkY9wu0sNDL0ddCLq+zI1sSD henry@henrys-iMac.local
+
+write_files:
+  - path: "/etc/flannel/options.env"
+    permissions: 0664
+    owner: "root"
+    content: |
+      FLANNELD_IFACE=${myip}
+      FLANNELD_ETCD_ENDPOINTS=http://${etcdip1}:2379,http://${etcdip2}:2379,http://${etcdip3}:2379
+  - path: /etc/kubernetes/ssl/ca.pem
+    permissions: 0664
+    content: |
+      -----BEGIN CERTIFICATE-----
+      MIIDGjCCAgKgAwIBAgIJANgWyqepacYDMA0GCSqGSIb3DQEBBQUAMBIxEDAOBgNV
+      BAMTB2t1YmUtY2EwHhcNMTYwMTI4MDMxMjExWhcNNDMwNjE1MDMxMjExWjASMRAw
+      DgYDVQQDEwdrdWJlLWNhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+      tN+L7z/AJNhKS6DLBhlqMZ/UEWE02UUoeL5ZELT1wO1Y/TkdevQXtf0ctY+6GPs0
+      KEnCp5el42LQJgQJveji+vYemXx3qAhwPf8ZYS7FmIxn8OkwdFrGIuAsWfA+8lQt
+      TTcOADQe3z/01fnzzx+Kvu6m3XlZQu5hzAusEZXrDl9ST0ylwtlyTP/MSKWRL2yq
+      O0TtQdh+99uM5FlW8Gxzd38MkME2jLZLH+rIxz3/rcHuLDm9UN5Jn30rEZK96XR3
+      rurSoXrEHQkFSU+o0q+bcZfeM+NqJZfOo3TfQEGI6TLAPcVAeX2ztdRsvleEEDQH
+      LucEWlliQkdxt1QExTRLVQIDAQABo3MwcTAdBgNVHQ4EFgQUe0r/LTSdPt/GlqSr
+      N9xW9wqCHukwQgYDVR0jBDswOYAUe0r/LTSdPt/GlqSrN9xW9wqCHumhFqQUMBIx
+      EDAOBgNVBAMTB2t1YmUtY2GCCQDYFsqnqWnGAzAMBgNVHRMEBTADAQH/MA0GCSqG
+      SIb3DQEBBQUAA4IBAQASFzTvIgsmHsB3dhZifPd5N6fzlhoLOll7oLfPZ29q8cXm
+      fn9pNB7ssQGjrtDRXsKQzdHJTsqiHLu9LOwK/GmiBim8Wb7P4A4/dqxY08r7lbyx
+      IgW4ome45XJJ6t705mbxb96J9Q2rIUQMU08aEAaxjGL+2VkdC2HJhcQ8uBPAlscA
+      d+g69ckn0w/5VeH86SAnqnNcmHDq366a1xkeGAUIHhRfrfKqPywZA7GKwd3WQl+K
+      vX2BPpmst8vd0GokVDQM5x0A6yNW0lSD+GNmzclRDASxplokH+cX/IjbqMHhTCZB
+      Co53ijQCum+esGdTToQAKGkbWxQfcmaRkh29CTbB
+      -----END CERTIFICATE-----
+  - path: /etc/kubernetes/ssl/apiserver.pem
+    permissions: 0664
+    content: |
+      -----BEGIN CERTIFICATE-----
+      MIIDRTCCAi2gAwIBAgIJAJsyL6xJJrX2MA0GCSqGSIb3DQEBBQUAMBIxEDAOBgNV
+      BAMTB2t1YmUtY2EwHhcNMTYwMjA2MTYzNTEyWhcNMTcwMjA1MTYzNTEyWjAZMRcw
+      FQYDVQQDDA5rdWJlLWFwaXNlcnZlcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+      AQoCggEBAM3CqmUgdXWpxWvoVFltTMgBCZuRkCtDDlB2qfRsGRPv3QTaDeYB++My
+      hB+93qqvcvS7JVpxGBedn3Ca6xZrkFpKuXjCQg/K4KU9P1YhbA1ye8cF9NM4RK+U
+      wCuKoExJxAV0s9wfWxM5QYfkAvBh/Kiv0h46BzdHPvf/UvkIz44RHACjOxm5zJ/w
+      TdE54difV62PaI2luztduPGxU488LqSwyFfYe4BtRNnl+ssd5/MmEje8kZhimbNd
+      NjHhBHVZSHKLyVURKol9t1tu5KmZ83f7ngz+kdM5WFp5IoCyvBvz+fVfxD/vIJOH
+      LUO8N4s7yAGtqPACeQiLG1Qp0ijB1l0CAwEAAaOBljCBkzAJBgNVHRMEAjAAMAsG
+      A1UdDwQEAwIF4DB5BgNVHREEcjBwggprdWJlcm5ldGVzghJrdWJlcm5ldGVzLmRl
+      ZmF1bHSCFmt1YmVybmV0ZXMuZGVmYXVsdC5zdmOCJGt1YmVybmV0ZXMuZGVmYXVs
+      dC5zdmMuY2x1c3Rlci5sb2NhbIcECgACCocECmQAAYcEfwAAATANBgkqhkiG9w0B
+      AQUFAAOCAQEAm30TcVJtTzkFjGKUqoItZF0vrOYhdHCg6GntsmvQRMBYqXKF2XQr
+      jCsziohRAsK/wdV8r6Zcd7K+SpF3lE+7kCdAmG9MruRFWFDAZXCtQjmrN7qltPIN
+      nR1IHcZujgKgnV69aVeuewpkVvvQnRDuFIMkRCd4YDPkRdFi9OFeQQVpbIrgKX1L
+      G6kW9EPCqYGzgyZLIvA7MvdalZbVzht7BQb3RAhv6ZENAPZdYdgF+pSsTeygqo+L
+      w3ymyjZeG4f6vyOcNoHGNc69yPWhmHcJotxE0PyM4JycIW4iScJsrpRHT5qj5Tpw
+      vC6BA2uIyaWY3jONgreXoPTQ4/fXXUJe0g==
+      -----END CERTIFICATE-----
+  - path: /etc/kubernetes/ssl/apiserver-key.pem
+    permissions: 0600
+    owner: "root:root"
+    content: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEpAIBAAKCAQEAzcKqZSB1danFa+hUWW1MyAEJm5GQK0MOUHap9GwZE+/dBNoN
+      5gH74zKEH73eqq9y9LslWnEYF52fcJrrFmuQWkq5eMJCD8rgpT0/ViFsDXJ7xwX0
+      0zhEr5TAK4qgTEnEBXSz3B9bEzlBh+QC8GH8qK/SHjoHN0c+9/9S+QjPjhEcAKM7
+      GbnMn/BN0Tnh2J9XrY9ojaW7O1248bFTjzwupLDIV9h7gG1E2eX6yx3n8yYSN7yR
+      mGKZs102MeEEdVlIcovJVREqiX23W27kqZnzd/ueDP6R0zlYWnkigLK8G/P59V/E
+      P+8gk4ctQ7w3izvIAa2o8AJ5CIsbVCnSKMHWXQIDAQABAoIBAHK5cIJ0J6nUYAQ7
+      hRRbke0OTwoTjlvgxpFsqHRk9VKdchFrd0Zgos5Z8zszhXyL2L/FvR0BY9p/A1Ao
+      wJ0+mj0N3v4K6gSeLMVVMgRXHEUfKQ6eLpS6kemIOeHNKHWAx6/3EvXP8dr1GKmp
+      I05ehB6V8cTyu+VBb0Wdcejy1a8ysERE8/5W/M7Tw0NsjoPFtG71eC11e9b6RGGI
+      Cc4vqYZdoZU7Y1eBei+jrVxHrDfKMqnRleXHTBLmxtk217CRaTQqCA1b/y7zFi6V
+      gzMCwvkY6xZXlOenlznPtzzedFE3gYpqeZ45Va5PaUNtYRC2Cm9NPGmYAYYgqy3Z
+      IgpqssECgYEA9+9jT9hR49Z+QYoaCxwFaVOX6G1vJ+ZbpFrZxTsm5B/CXgZkNLVX
+      PkMtjnlHOd4mdXCuckfmpCsVf0vxQG2hVsonEqUdxWMOUvELjPy83pAKnQpDtb43
+      FZy/3GSrj2PZv0zjuR3kBeL95vqQHn+amU177dfK0CskjA/b77sgY9ECgYEA1HQU
+      UeG/maoTj0kYIgFKuo19BEGa94pLMNTFRoDMUDqTzWGuDnz6tIWLBn2BdSZAPO5C
+      DvszbcWhmA7/+lftdMLGlWLH/X4FJd6uEXPAmmOaIWAybvbxfyDn2Shhp1ZktbWF
+      tEw/L6550ptRb3nIEh4ht68Xjt9OC0mSB+01aM0CgYAdJx7MUqk+Wwg5eJ2bVM4m
+      Flg0UjnRvTplVvFoSY5HIJzgJWw+7lu1zHxc1lHTshVflcJNWbr67r32W92gL8Pa
+      yqZRgOzBOuaCRimPiGBE4zb8RCq2AgnEFsxQg93QXHNMFSRpreQT9R7Zu/iaPXLW
+      N9AspUUJuSjw9yRrSduDIQKBgQCDPqqG4vTgUub+b2NPLokhseJ3TKgVIAPPSMIO
+      Cect8OH50Mwb+y1Nc+osuj/NRTIN8goxAxIEUEDBlRKhbswsg172Ti3J9Z3shSH3
+      ehCTz9AZqjm9vyP1KzjPOFkLbR2N+3N7rFakeB6d8oFeYlcsihy+QpZFFsI5yttB
+      tlJ2SQKBgQCi0ylp43cSBVghgPi6o8QRrit/i+wdbrcyX4fP0RFelk1gqeiVg+qp
+      tFzuHKIPGIPr+pK9MTjMWNS3moxP2cxO5WTHrN9sL9IhXmuwa6e8HNRCWBYntUzQ
+      CpGznCfq2z3WmYHeYs5DJjqSdTpke6vWZ7aJDTN7Ad/uG8OLJoFVTw==
+      -----END RSA PRIVATE KEY-----
+
+coreos:
+  etcd2:
+    name: master${num}
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    advertise-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    initial-cluster: etcd1=http://${etcdip1}:2380,etcd2=http://${etcdip2}:2380,etcd3=http://${etcdip3}:2380
+    proxy: on
+  units:
+    - name: systemd-networkd.service
+      command: stop
+    - name: "00-enp0s3.network"
+      runtime: true
+      content: |
+        [Match]
+        Name=enp0s3
+
+        [Network]
+        DNS=${dns}
+        Address=${myip}/24
+        Gateway=${gateway}
+    - name: down-interfaces.service
+      command: start
+      content: |
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/ip link set enp0s3 down
+        ExecStart=/usr/bin/ip addr flush dev enp0s3
+    - name: systemd-networkd.service
+      command: restart
+    - name: docker-cache.service
+      command: start
+      content: |
+        [Unit]
+        Description=Docker cache proxy
+        Requires=early-docker.service
+        After=early-docker.service
+        Before=early-docker.target
+        [Service]
+        Restart=always
+        TimeoutStartSec=0
+        RestartSec=5
+        Environment="TMPDIR=/var/tmp/"
+        Environment="DOCKER_HOST=unix:///var/run/early-docker.sock"
+        ExecStartPre=-/usr/bin/docker kill v2-mirror
+        ExecStartPre=-/usr/bin/docker rm v2-mirror
+        ExecStartPre=/usr/bin/docker pull registry:2
+        ExecStartPre=/usr/bin/mkdir -p /var/lib/registry
+        ExecStart=/usr/bin/docker run --rm --net host --name v2-mirror \
+          -v /var/lib/registry:/var/lib/registry \
+          -v /etc/kubernetes/ssl:/certs \
+          -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/apiserver.pem \
+          -e REGISTRY_HTTP_TLS_KEY=/certs/apiserver-key.pem \
+          -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io \
+          registry:2
+    - name: fleet.service
+      command: start
+    - name: flanneld.service
+      command: start
+      drop-ins:
+        - name: 40-ExecStartPre-symlink.conf
+          content: |
+            [Service]
+            ExecStartPre=/usr/bin/ln -sf /etc/flannel/options.env /run/flannel/options.env
+        - name: 50-network-config.conf
+          content: |
+            [Unit]
+            Requires=etcd2.service
+            [Service]
+            ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{"Network":"10.244.0.0/16", "Backend": {"Type": "host-gw"}}'
+    - name: docker.service
+      command: start
+      drop-ins:
+        - name: 40-flannel.conf
+          content: |
+            [Unit]
+            Requires=flanneld.service
+            After=flanneld.service
+            [Service]
+            Environment="DOCKER_OPTS=--registry-mirror=http://127.0.0.1:5000"
+    - name: kube-install.service
+      command: start
+      content: |
+        [Unit]
+        Description=Download/Install Kubernetes
+        Requires=network-online.target
+        After=network-online.target
+        ConditionPathExists=/etc/kubernetes/ssl
+        [Service]
+        Type=oneshot
+        ExecStart=-/usr/bin/mkdir -p /opt/bin
+      ExecStart=/usr/bin/wget -c -nv -nc -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/v1.1.7/bin/linux/amd64/hyperkube
+        ExecStart=/usr/bin/chmod +x /opt/bin/hyperkube
+    - name: kube-apiserver.service
+      command: start
+      content: |
+        [Unit]
+        Requires=etcd2.service docker-cache.service docker.service flanneld.service kube-install.service
+        After=etcd2.service docker-cache.service docker.service flanneld.service kube-install.service
+        [Service]
+        ExecStart=/opt/bin/hyperkube apiserver \
+          --bind-address=0.0.0.0 \
+          --insecure-bind-address=0.0.0.0 \
+          --etcd-servers=http://${etcdip1}:2379,http://${etcdip2}:2379,http://${etcdip3}:2379 \
+          --allow-privileged=true \
+          --service-cluster-ip-range=10.100.0.0/16 \
+          --secure-port=443 \
+          --advertise-address=${myip} \
+          --admission-control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota \
+          --tls-cert-file=/etc/kubernetes/ssl/apiserver.pem \
+          --tls-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem \
+          --client-ca-file=/etc/kubernetes/ssl/ca.pem \
+          --service-account-key-file=/etc/kubernetes/ssl/apiserver-key.pem
+        Restart=always
+        RestartSec=10
+    - name: kube-controller-manager.service
+      command: start
+      content: |
+        [Unit]
+        Requires=kube-apiserver.service
+        After=kube-apiserver.service
+        [Service]
+        ExecStart=/opt/bin/hyperkube controller-manager \
+          --master=http://127.0.0.1:8080 \
+          --service-account-private-key-file=/etc/kubernetes/ssl/apiserver-key.pem \
+          --root-ca-file=/etc/kubernetes/ssl/ca.pem
+        Restart=always
+        RestartSec=10
+    - name: kube-scheduler.service
+      command: start
+      content: |
+        [Unit]
+        Requires=kube-apiserver.service
+        After=kube-apiserver.service
+        [Service]
+        ExecStart=/opt/bin/hyperkube scheduler \
+          --master=http://127.0.0.1:8080
+        Restart=always
+        RestartSec=10
